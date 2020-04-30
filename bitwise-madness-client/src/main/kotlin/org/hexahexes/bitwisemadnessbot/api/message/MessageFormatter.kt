@@ -4,10 +4,10 @@ import org.javacord.api.event.message.MessageCreateEvent
 import java.util.*
 
 class MessageFormatter(messageCreateEvent: MessageCreateEvent, expectedPrefix: String) {
-    val prefix: String
-    val command: String
-    val args: LinkedList<String> = LinkedList()
-    val formatStatus: MessageFormatStatus
+    private val prefix: String
+    private val command: String
+    private val args: LinkedList<String> = LinkedList()
+    private val formatStatus: MessageFormatStatus
 
     init {
         val split = messageCreateEvent.messageContent.split(" ")
@@ -18,7 +18,7 @@ class MessageFormatter(messageCreateEvent: MessageCreateEvent, expectedPrefix: S
             formatStatus = MessageFormatStatus.INCORRECT_SIZE
             prefix = ""; command = ""
         } else if(split[0] != expectedPrefix) {
-            formatStatus = MessageFormatStatus.PREFIX_NOT_MACTHED
+            formatStatus = MessageFormatStatus.PREFIX_UNMATCHED
             prefix = ""; command = ""
         } else {
             formatStatus = MessageFormatStatus.OK

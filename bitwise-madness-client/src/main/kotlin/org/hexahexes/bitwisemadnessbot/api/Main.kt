@@ -5,9 +5,8 @@ import org.javacord.api.DiscordApiBuilder
 
 object Main {
     fun main() {
-        val token  = Configurations.TOKEN
         DiscordApiBuilder()
-                .setToken(token)
+                .setToken(Configurations.TOKEN)
                 .login()
                 .thenAccept {
                     it.addMessageCreateListener(MessageCreateHandler)

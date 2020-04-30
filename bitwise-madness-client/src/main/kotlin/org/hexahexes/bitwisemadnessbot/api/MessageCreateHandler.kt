@@ -10,9 +10,9 @@ import org.javacord.api.listener.message.MessageCreateListener
 
 object MessageCreateHandler : MessageCreateListener {
 
-    val client = Configurations.CLIENT
-    val botPrefix = Configurations.PREFIX
-    val router = Configurations.ROUTER
+    private val client    = Configurations.CLIENT
+    private val botPrefix = Configurations.PREFIX
+    private val router    = Configurations.ROUTER
 
     const val ERROR_MESSAGE: String = "No Such Command!"
 
