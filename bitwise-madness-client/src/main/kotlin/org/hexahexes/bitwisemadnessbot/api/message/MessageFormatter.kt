@@ -4,10 +4,10 @@ import org.javacord.api.event.message.MessageCreateEvent
 import java.util.*
 
 class MessageFormatter(messageCreateEvent: MessageCreateEvent, expectedPrefix: String) {
-    private val prefix: String
-    private val command: String
-    private val args: LinkedList<String> = LinkedList()
-    private val formatStatus: MessageFormatStatus
+    val prefix: String
+    val command: String
+    val args: LinkedList<String> = LinkedList()
+    val formatStatus: MessageFormatStatus
 
     init {
         val split = messageCreateEvent.messageContent.split(" ")
