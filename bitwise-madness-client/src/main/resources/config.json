@@ -1,0 +1,11 @@
+{
+  "token" : "01010101",
+
+  "routes" : [
+    {
+      "id"  : "hello",
+      "url" : "hello",
+      "args" : ["msg"]
+    }
+  ]
+}
