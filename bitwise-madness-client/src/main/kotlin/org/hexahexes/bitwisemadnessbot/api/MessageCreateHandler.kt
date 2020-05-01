@@ -1,10 +1,15 @@
 package org.hexahexes.bitwisemadnessbot.api
 
+import io.ktor.client.request.delete
 import io.ktor.client.request.get
+import io.ktor.client.request.post
+import io.ktor.client.request.put
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import org.hexahexes.bitwisemadnessbot.api.message.MessageFormatStatus
-import org.hexahexes.bitwisemadnessbot.api.message.MessageFormatter
+import org.hexahexes.bitwisemadnessbot.api.configuration.Configurations
+import org.hexahexes.bitwisemadnessbot.api.messages.message.MessageFormatStatus
+import org.hexahexes.bitwisemadnessbot.api.messages.message.MessageFormatter
+import org.hexahexes.bitwisemadnessbot.api.util.HttpMethod
 import org.javacord.api.event.message.MessageCreateEvent
 import org.javacord.api.listener.message.MessageCreateListener
 
@@ -20,6 +25,7 @@ object MessageCreateHandler : MessageCreateListener {
     data class Response(val text: String)
 
     override fun onMessageCreate(event: MessageCreateEvent?) {
+
         if(event == null) {
             return
         }
@@ -32,10 +38,18 @@ object MessageCreateHandler : MessageCreateListener {
         if (commandRoute == null) {
             channel.sendMessage(ERROR_MESSAGE)
         } else {
-            val url = commandRoute.urlWithReplacedArgs(messageFormatter.args)
+            val messageId = event.message.idAsString
+            val url = commandRoute.urlWithReplacedArgs(messageId, messageFormatter.args)
             GlobalScope.launch {
-                val response = client.get<Response>(url)
-                channel.sendMessage(response.text)
+                val response: Response? = when(commandRoute.method) {
+                    HttpMethod.GET    -> client.get<Response>(url)
+                    HttpMethod.POST   -> client.post<Response>(url)
+                    HttpMethod.PUT    -> client.put<Response>(url)
+                    HttpMethod.DELETE -> client.delete<Response>(url)
+                }
+                if(response != null) {
+                    channel.sendMessage(response.text)
+                }
             }
         }
     }
