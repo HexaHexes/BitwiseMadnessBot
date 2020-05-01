@@ -2,7 +2,6 @@
   "servicesAddress": "localhost:8080",
   "prefix" : "!do",
   "token"  :  "DISCORD_BOT_TOKEN",
-  "cmdNotFound" : "We're no strangers to love, you know the rules and so do I ;)",
   "routes" : [
     {
       "id"  : "hello",
