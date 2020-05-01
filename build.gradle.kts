@@ -26,7 +26,6 @@ allprojects {
 	apply(plugin = "io.spring.dependency-management")
 	apply(plugin = "org.springframework.boot")
 
-
 	val developmentOnly by configurations.creating
 	configurations {
 		runtimeClasspath {
@@ -40,6 +39,7 @@ allprojects {
 		implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 		implementation("org.jetbrains.kotlin:kotlin-reflect")
 		implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+		implementation("org.javacord:javacord:3.0.5")
 		developmentOnly("org.springframework.boot:spring-boot-devtools")
 		testImplementation("org.springframework.boot:spring-boot-starter-test") {
 			exclude(group = "org.junit.vintage", module = "junit-vintage-engine")

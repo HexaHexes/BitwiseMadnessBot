@@ -1,19 +1,29 @@
 package org.hexahexes.bitwisemadnessbot.api.messages.command
 
 import io.ktor.http.HttpMethod
-import org.hexahexes.bitwisemadnessbot.api.configuration.Configurations
+import org.javacord.api.entity.server.Server
 import java.lang.StringBuilder
+import java.util.*
+import kotlin.collections.HashMap
 
 class CommandRoute(val method: HttpMethod, private val url: String, private val argIds: Array<String>) {
 
-    fun getUrl(messageId: String): String {
-        return StringBuilder("http://")
-                .append(Configurations.SERVICES_ADDRESS)
-                .append("/")
+    fun getUrl(messageId: String, channelId: Long, originServer: Optional<Server>): String {
+
+        val urlBuilder =
+                StringBuilder("http://")
                 .append(url)
                 .append("?messageId=")
                 .append(messageId)
-                .toString()
+                .append("&channelId=")
+                .append(channelId)
+                .append("&channelId=")
+
+        originServer.map {
+            urlBuilder.append("&serverId=").append(it.id)
+        }
+
+        return urlBuilder.toString()
     }
 
     // might have errors when argIds dont have the same length as argValues

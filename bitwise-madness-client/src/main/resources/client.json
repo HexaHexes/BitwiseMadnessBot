@@ -1,13 +1,18 @@
 {
-  "servicesAddress": "localhost:8080",
   "prefix" : "!do",
   "token"  :  "DISCORD_BOT_TOKEN",
   "routes" : [
     {
       "id"  : "hello",
-      "url" : "hello",
+      "url" : "localhost:8080/hello",
       "method" : "GET",
       "args" : []
+    },
+    {
+      "id"  : "repeat",
+      "url" : "localhost:8080/repeat",
+      "method" : "GET",
+      "args" : ["msg"]
     }
   ]
 }

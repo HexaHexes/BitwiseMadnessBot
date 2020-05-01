@@ -42,7 +42,9 @@ object MessageCreateHandler : MessageCreateListener {
             channel.sendMessage(ERROR_MESSAGE)
         } else {
             val messageId = event.message.idAsString
-            val requestUrl = commandRoute.getUrl(messageId)
+            val channelId = event.channel.id
+            val originServer = event.server
+            val requestUrl = commandRoute.getUrl(messageId, channelId, originServer)
             val args = commandRoute.getArgs(messageFormatter.args)
             val json = io.ktor.client.features.json.defaultSerializer()
 
