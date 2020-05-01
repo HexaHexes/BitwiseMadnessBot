@@ -1,6 +1,6 @@
 {
   "prefix" : "!do",
-  "token"  :  "DISCORD_BOT_TOKEN",
+  "token"  : "DISCORD_BOT_TOKEN",
   "routes" : [
     {
       "id"  : "hello",

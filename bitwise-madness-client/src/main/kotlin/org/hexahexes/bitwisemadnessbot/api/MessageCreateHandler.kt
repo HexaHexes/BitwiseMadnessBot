@@ -1,27 +1,44 @@
 package org.hexahexes.bitwisemadnessbot.api
 
+import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.ObjectMapper
 import io.ktor.client.request.request
 import io.ktor.client.request.url
+import io.ktor.client.statement.HttpResponse
+import io.ktor.http.contentLength
 import io.ktor.util.error
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.hexahexes.bitwisemadnessbot.api.configuration.Configurations
 import org.hexahexes.bitwisemadnessbot.api.messages.message.MessageFormatStatus
 import org.hexahexes.bitwisemadnessbot.api.messages.message.MessageFormatter
 import org.javacord.api.event.message.MessageCreateEvent
 import org.javacord.api.listener.message.MessageCreateListener
 import org.slf4j.LoggerFactory
+import java.nio.ByteBuffer
 
 object MessageCreateHandler : MessageCreateListener {
     private val logger    = LoggerFactory.getLogger(this.javaClass)
     private val client    = Configurations.CLIENT
     private val botPrefix = Configurations.PREFIX
     private val router    = Configurations.ROUTER
+    private val commandNotFoundText = "Command not found!"
 
-    const val ERROR_MESSAGE: String = "No Such Command!"
+    private const val TEXT_KEY: String  = "text"
+    private const val ERROR_KEY: String = "error"
 
-    // response format
-    data class Response(val text: String)
+    private val RESPONSE_MAPPER = ObjectMapper()
+
+    private suspend fun mapResponseContent(response: HttpResponse): JsonNode {
+        val responseContent = response.content
+        val buffer = ByteBuffer.allocate(response.contentLength()?.toInt()!!)
+        responseContent.readFully(buffer)
+        return withContext(Dispatchers.IO) {
+            RESPONSE_MAPPER.readTree(buffer.toString())
+        }
+    }
 
     override fun onMessageCreate(event: MessageCreateEvent?) {
         logger.info("Received event")
@@ -39,38 +56,50 @@ object MessageCreateHandler : MessageCreateListener {
         val channel = event.channel
         val commandRoute = router[messageFormatter.command]
         if (commandRoute == null) {
-            channel.sendMessage(ERROR_MESSAGE)
+            channel.sendMessage(commandNotFoundText)
         } else {
             val messageId = event.message.idAsString
             val channelId = event.channel.id
-            val originServer = event.server
-            val requestUrl = commandRoute.getUrl(messageId, channelId, originServer)
+            val server    = event.server
+            val requestUrl = commandRoute.getUrl(messageId, channelId, server)
             val args = commandRoute.getArgs(messageFormatter.args)
-            val json = io.ktor.client.features.json.defaultSerializer()
+            val jsonSerializer = io.ktor.client.features.json.defaultSerializer()
 
             GlobalScope.launch {
                 try {
-                    val response: Response? = client.request<Response> {
+                    val responseMap: HashMap<String,String> = client.request {
                         logger.info("Sending Request for Message $messageId")
 
                         url(requestUrl)
                         logger.info("URL: $requestUrl")
 
-                        //contentType(ContentType.Application.Json)
-
                         method = commandRoute.method
                         logger.info("METHOD: $method")
 
-                        body = json.write(args)
+                        body = jsonSerializer.write(args)
                         logger.info("BODY: $body")
                     }
 
-                    if(response != null) {
-                        val text = response.text
-                        channel.sendMessage(text)
-                        logger.info("Response text from service to message $messageId -> $text")
-                    } else {
+                    if(responseMap.isEmpty()) {
                         logger.info("No response text from service to message $messageId")
+                    } else {
+                        val messageResponse = when {
+                            responseMap.containsKey(ERROR_KEY) -> {
+                                responseMap[ERROR_KEY]
+                            }
+                            responseMap.containsKey(TEXT_KEY) -> {
+                                responseMap[TEXT_KEY]
+                            }
+                            else -> {
+                                val msgBuilder = StringBuilder()
+                                responseMap.entries.map {
+                                    msgBuilder.append(it.key).append(" -> ").append(it.value).append("\n")
+                                }
+                                msgBuilder.toString()
+                            }
+                        }
+                        channel.sendMessage(messageResponse)
+                        logger.info("Response text from service to message $messageId -> $messageResponse")
                     }
                 } catch (e: Exception) {
                     logger.error(e)

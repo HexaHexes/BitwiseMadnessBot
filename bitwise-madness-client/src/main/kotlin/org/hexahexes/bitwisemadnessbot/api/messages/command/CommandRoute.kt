@@ -17,7 +17,6 @@ class CommandRoute(val method: HttpMethod, private val url: String, private val 
                 .append(messageId)
                 .append("&channelId=")
                 .append(channelId)
-                .append("&channelId=")
 
         originServer.map {
             urlBuilder.append("&serverId=").append(it.id)

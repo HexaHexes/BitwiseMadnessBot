@@ -2,6 +2,8 @@ package org.hexahexes.bitwisemadnessbot.api.configuration
 
 import com.beust.klaxon.Klaxon
 import io.ktor.client.HttpClient
+import io.ktor.client.features.json.JacksonSerializer
+import io.ktor.client.features.json.JsonFeature
 import io.ktor.http.HttpMethod
 import org.hexahexes.bitwisemadnessbot.api.messages.command.CommandRoute
 
@@ -13,7 +15,11 @@ object Configurations {
     val ROUTER : HashMap<String, CommandRoute>
     val PREFIX : String
     val TOKEN  : String
-    val CLIENT : HttpClient = HttpClient()
+    val CLIENT : HttpClient = HttpClient(){
+        install(JsonFeature) {
+            serializer = JacksonSerializer()
+        }
+    }
 
     init {
 
