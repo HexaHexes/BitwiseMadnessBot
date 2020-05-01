@@ -2,9 +2,8 @@ package org.hexahexes.bitwisemadnessbot.api.configuration
 
 import com.beust.klaxon.Klaxon
 import io.ktor.client.HttpClient
+import io.ktor.http.HttpMethod
 import org.hexahexes.bitwisemadnessbot.api.messages.command.CommandRoute
-import org.hexahexes.bitwisemadnessbot.api.util.HttpMethod
-
 
 object Configurations {
     
@@ -31,7 +30,7 @@ object Configurations {
         ROUTER = HashMap()
         clientConfig.routes.forEach {
             val routeId = it.id
-            val method  = HttpMethod.valueOf(it.method)
+            val method  = HttpMethod(it.method)
             val commandRoute = CommandRoute(method, it.url, it.args)
             ROUTER[routeId] = commandRoute
         }

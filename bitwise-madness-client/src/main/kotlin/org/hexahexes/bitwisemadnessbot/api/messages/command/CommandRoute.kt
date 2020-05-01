@@ -1,31 +1,27 @@
 package org.hexahexes.bitwisemadnessbot.api.messages.command
 
+import io.ktor.http.HttpMethod
 import org.hexahexes.bitwisemadnessbot.api.configuration.Configurations
-import org.hexahexes.bitwisemadnessbot.api.util.HttpMethod
 import java.lang.StringBuilder
 
 class CommandRoute(val method: HttpMethod, private val url: String, private val argIds: Array<String>) {
 
+    fun getUrl(messageId: String): String {
+        return StringBuilder("http://")
+                .append(Configurations.SERVICES_ADDRESS)
+                .append("/")
+                .append(url)
+                .append("?messageId=")
+                .append(messageId)
+                .toString()
+    }
+
     // might have errors when argIds dont have the same length as argValues
-    fun urlWithReplacedArgs(messageId: String, argValues: List<String>): String {
-        val servicesAddress = Configurations.SERVICES_ADDRESS
-        val urlBuilder =
-                StringBuilder("http://")
-                        .append(servicesAddress)
-                        .append("/")
-                        .append(url)
-                        .append("?messageId=")
-                        .append(messageId)
-
+    fun getArgs(argValues: List<String>): HashMap<String,String> {
+        val argsMap = HashMap<String,String>()
         argIds.zip(argValues).forEach {
-            val (id, value) = it
-            urlBuilder
-                    .append("&")
-                    .append(id)
-                    .append("=")
-                    .append(value)
+            argsMap[it.first] = it.second
         }
-
-        return urlBuilder.toString()
+        return argsMap
     }
 }
