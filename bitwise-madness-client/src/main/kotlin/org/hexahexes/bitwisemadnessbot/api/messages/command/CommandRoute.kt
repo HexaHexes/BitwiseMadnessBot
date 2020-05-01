@@ -1,5 +1,6 @@
 package org.hexahexes.bitwisemadnessbot.api.messages.command
 
+import org.hexahexes.bitwisemadnessbot.api.configuration.Configurations
 import org.hexahexes.bitwisemadnessbot.api.util.HttpMethod
 import java.lang.StringBuilder
 
@@ -7,8 +8,11 @@ class CommandRoute(val method: HttpMethod, private val url: String, private val 
 
     // might have errors when argIds dont have the same length as argValues
     fun urlWithReplacedArgs(messageId: String, argValues: List<String>): String {
+        val servicesAddress = Configurations.SERVICES_ADDRESS
         val urlBuilder =
                 StringBuilder("http://")
+                        .append(servicesAddress)
+                        .append("/")
                         .append(url)
                         .append("?messageId=")
                         .append(messageId)

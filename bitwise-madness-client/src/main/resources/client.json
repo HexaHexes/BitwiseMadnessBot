@@ -1,4 +1,5 @@
 {
+  "adress": "localhost:8080",
   "prefix" : "!do",
   "token"  :  "DISCORD_BOT_TOKEN",
   "routes" : [
