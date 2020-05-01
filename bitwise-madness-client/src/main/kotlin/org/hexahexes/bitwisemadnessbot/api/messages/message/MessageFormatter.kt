@@ -1,4 +1,4 @@
-package org.hexahexes.bitwisemadnessbot.api.message
+package org.hexahexes.bitwisemadnessbot.api.messages.message
 
 import org.javacord.api.event.message.MessageCreateEvent
 import java.util.*

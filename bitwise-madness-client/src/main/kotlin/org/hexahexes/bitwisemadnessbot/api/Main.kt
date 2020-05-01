@@ -1,5 +1,6 @@
 package org.hexahexes.bitwisemadnessbot.api
 
+import org.hexahexes.bitwisemadnessbot.api.configuration.Configurations
 import org.javacord.api.DiscordApiBuilder
 
 
@@ -11,5 +12,6 @@ object Main {
                 .thenAccept {
                     it.addMessageCreateListener(MessageCreateHandler)
                 }
+        println("Bot Running")
     }
 }
