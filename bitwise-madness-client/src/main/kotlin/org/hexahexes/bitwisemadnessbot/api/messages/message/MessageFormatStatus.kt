@@ -1,4 +1,4 @@
-package org.hexahexes.bitwisemadnessbot.api.message
+package org.hexahexes.bitwisemadnessbot.api.messages.message
 
 enum class MessageFormatStatus {
     INCORRECT_SIZE,
