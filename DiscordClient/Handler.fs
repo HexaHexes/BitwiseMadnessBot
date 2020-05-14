@@ -18,7 +18,7 @@ type CommandProperty =
 type Service = { Address:String; Method: String }
 
 let extractServiceInfo (cmdJson: JsonValue) =
-    let method  = Method.ToString() |> cmdJson.TryGetProperty 
+    let method  = Method.ToString()  |> cmdJson.TryGetProperty 
     let address = Address.ToString() |> cmdJson.TryGetProperty 
     match method, address with 
     | Some(method), Some(address) -> Some { Method = method.AsString(); Address = address.AsString() }
@@ -43,8 +43,8 @@ let makeRequest (message: SocketMessage) service command  =
 
 let onMessageCreated getPrefix tryGetCommand buildParser (message: SocketMessage) = 
     let messageContent = message.Content
-    let parse = getPrefix() |> buildParser
-    let command = parse messageContent     
+    let prefix = getPrefix()
+    let command = buildParser prefix messageContent     
     command 
     |> Option.bind (fun cmd -> tryGetCommand cmd.Key)
     |> Option.bind extractServiceInfo

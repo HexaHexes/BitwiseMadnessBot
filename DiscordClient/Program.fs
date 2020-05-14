@@ -7,7 +7,7 @@ open Discord
 open Discord.WebSocket
 open Handler
 open FSharp.Data
-open System.IO; 
+open System.IO 
 
 [<EntryPoint>]
 let main argv = 
