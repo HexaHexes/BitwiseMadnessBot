@@ -1,0 +1,10 @@
+{
+    "Token"  : "DISCORD_BOT_TOKEN",
+    "Prefix" : "!",
+    "Commands" : {
+        "hello" : {
+            "Address" : "https://localhost:8080/",
+            "Method"  : "GET"
+        }
+    }
+}
